@@ -1,15 +1,14 @@
-package com.ohgiraffers.secondservice;
+package com.ohgiraffers.gateway;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 
 @SpringBootApplication
-@EnableDiscoveryClient
-public class Chap0202SecondServiceLectureSourceApplication {
+public class Chap03SpringCloudGatewayLectureSourceApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(Chap0202SecondServiceLectureSourceApplication.class, args);
+        SpringApplication.run(Chap03SpringCloudGatewayLectureSourceApplication.class, args);
     }
 
 }
