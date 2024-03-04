@@ -2,8 +2,10 @@ package com.ohgiraffers.firstservice;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 
 @SpringBootApplication
+@EnableDiscoveryClient  // 나 클라임
 public class Chap0201FirstServiceLectureSourceApplication {
 
     public static void main(String[] args) {
