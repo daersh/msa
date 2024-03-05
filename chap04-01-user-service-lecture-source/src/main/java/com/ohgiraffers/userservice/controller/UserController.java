@@ -50,6 +50,7 @@ public class UserController {
     public ResponseEntity<ResponseUser> registUser(@RequestBody RequestUser user){
         /*requestUser -> UserDOT*/
         UserDTO userDTO = modelMapper.map(user, UserDTO.class);
+        System.out.println("userDTO = " + userDTO);
         /*회원가입 비즈니스 로직 시작*/
         userService.registUser(userDTO);
         /*userDTO->ResponseUser*/

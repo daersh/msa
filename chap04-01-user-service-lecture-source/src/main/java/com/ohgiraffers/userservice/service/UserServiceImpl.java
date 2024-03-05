@@ -3,14 +3,17 @@ package com.ohgiraffers.userservice.service;
 import com.ohgiraffers.userservice.aggregate.UserEntity;
 import com.ohgiraffers.userservice.dto.UserDTO;
 import com.ohgiraffers.userservice.repository.UserRepository;
-import org.apache.catalina.User;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.modelmapper.spi.MatchingStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 @Service
@@ -36,5 +39,16 @@ public class UserServiceImpl implements UserService {
         /*spring security 모듈 추가 후 진행하므로 security 설정도 추가한다.*/
         userEntity.setEncryptedPwd(bCryptPasswordEncoder.encode(userDTO.getPwd()));
         userRepository.save(userEntity);
+    }
+
+    /*UserDetailsService 인터페이스 상속 이후 DB 에서 로그인 사용자 정보 조회 후 UserDetails 타입으로 반환하는 기능 구현*/
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        UserEntity userEntity = userRepository.findByEmail(email);
+        if (userEntity==null){
+            throw new UsernameNotFoundException(email+" 아이디 유저는 존재하이 않음");
+        }
+
+        return new User(userEntity.getEmail(),userEntity.getEncryptedPwd(),true,true,true,true, new ArrayList<>());  // userDetails를 상속받는 User를 반환해야함
     }
 }
