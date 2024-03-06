@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 @AllArgsConstructor
 @Getter
 public class HelloVO {
+
     @Value("${swcamp.message}")
     private String message;
-
 }
