@@ -4,5 +4,33 @@
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ohgiraffers.orderservice.repository.OrderMapper">
 
+    <resultMap id="orderResultMap" type="com.ohgiraffers.orderservice.aggregate.Order">
+        <id property="orderCode" column="order_code"/>
+        <result property="userId" column="user_id"/>
+        <result property="orderDate" column="order_date"/>
+        <result property="orderTime" column="order_time"/>
+        <result property="totalOrderPrice" column="total_order_price"/>
+        <!--collection이면 이렇게 association은 다르게 해야함 복습할 것-->
+        <collection property="orderMenus" ofType="com.ohgiraffers.orderservice.aggregate.OrderMenu">
+            <id property="orderCode" column="order_code"/>
+            <id property="menuCode" column="menu_code"/>
+            <result property="orderAmount" column="order_amount"/>
+        </collection>
+    </resultMap>
 
+    <select id="selectOrdersByUserId" parameterType="string" resultMap="orderResultMap">
+        SELECT
+               a.order_code
+             , a.user_id
+             , a.order_date
+             , a.order_time
+             , a.total_order_price
+             , b.order_code
+             , b.menu_code
+             , b.order_amount
+          FROM tbl_order2 a
+          JOIN tbl_order_menu2 b on (a.order_code = b.order_code)
+         WHERE a.user_id = #{userID}
+
+    </select>
 </mapper>

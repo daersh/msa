@@ -1,8 +1,10 @@
 package com.ohgiraffers.userservice.service;
 
 import com.ohgiraffers.userservice.aggregate.UserEntity;
+import com.ohgiraffers.userservice.client.OrderServiceClient;
 import com.ohgiraffers.userservice.dto.UserDTO;
 import com.ohgiraffers.userservice.repository.UserRepository;
+import com.ohgiraffers.userservice.vo.ResponseOrder;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -24,13 +27,19 @@ public class UserServiceImpl implements UserService{
 
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
+    /*FeignClient 이후 추가할 부분*/
+    private OrderServiceClient orderServiceClient;
+
     @Autowired
     public UserServiceImpl(UserRepository userRepository,
                            ModelMapper modelMapper,
-                           BCryptPasswordEncoder bCryptPasswordEncoder) {
+                           BCryptPasswordEncoder bCryptPasswordEncoder,
+                           OrderServiceClient orderServiceClient
+    ) {
         this.userRepository = userRepository;
         this.modelMapper = modelMapper;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        this.orderServiceClient = orderServiceClient;
     }
 
     @Transactional
@@ -58,11 +67,15 @@ public class UserServiceImpl implements UserService{
     }
     @Override
     public UserDTO getUserById(String id) {
-        return modelMapper.map(
+        UserDTO userDTO =  modelMapper.map(
                 userRepository.findById(Long.valueOf(id))
                         .orElseThrow(()-> {return new UsernameNotFoundException("조회 회원 없음");})
                 ,UserDTO.class
         );
+        List<ResponseOrder> orderList = orderServiceClient.getUserOrders(id);
+        userDTO.setOrders(orderList);
+
+        return userDTO;
     }
 
     /* 설명. UserDetailsService 인터페이스 상속 이후 DB에서 로그인 사용자 정보 조회 후 UserDetails 타입으로 반환하는 기능 구현 */
@@ -75,4 +88,5 @@ public class UserServiceImpl implements UserService{
                 true, true, true, true,
                 new ArrayList<>());
     }
+
 }

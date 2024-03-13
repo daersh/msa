@@ -19,9 +19,7 @@ public class UserController {
 
     private Environment env;
     private HelloVO helloVo;
-
     private ModelMapper modelMapper;
-
     private UserService userService;
 
     @Autowired
@@ -57,6 +55,9 @@ public class UserController {
     /* 설명. 회원가입(POST - /users) */
     @PostMapping("/users")
     public ResponseEntity<ResponseUser> registUser(@RequestBody RequestUser user) {
+        // config server에서 제공하는 test.mesage 확인
+        System.out.println("config server message: "+env.getProperty("test.message"));
+
 
         /* 설명. RequestUser -> UserDTO */
         UserDTO userDTO = modelMapper.map(user, UserDTO.class);
