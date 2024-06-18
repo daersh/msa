@@ -1,6 +1,6 @@
 # 유레카 서버를 웹 서비스로 등록
 server:
-  port: 8888
+  port: 8761
 # 각 마이크로 서비스 아이디 등록
 spring:
   application:
